@@ -7,9 +7,9 @@ import (
 )
 
 type Rule struct {
-	Key    string
-	Demand string
-	Value  string
+	Key   string
+	Type  string
+	Value string
 }
 
 func (r *Rule) Met(s *Stat) bool {
@@ -25,16 +25,22 @@ func (r *Rule) Met(s *Stat) bool {
 		return false
 	}
 
-	if r.Demand == "boolean" {
+	if r.Type == "boolean" {
 		val := parsed[r.Key]
 		needed_val, _ := strconv.ParseBool(r.Value)
 		if val.(bool) != needed_val {
 			return false
 		}
-	} else if r.Demand == "string" {
+	} else if r.Type == "string" {
 		val := parsed[r.Key]
 		needed_val := r.Value
 		if val.(string) != needed_val {
+			return false
+		}
+	} else if r.Type == "number" {
+		val := parsed[r.Key]
+		needed_val, _ := strconv.ParseFloat(r.Value, 64)
+		if val.(float64) != needed_val {
 			return false
 		}
 	}
