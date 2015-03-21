@@ -61,15 +61,16 @@ func metNumber(r *Rule, parsed map[string]interface{}) bool {
 	val := parsed[r.Key].(float64)
 	needed_val, _ := strconv.ParseFloat(r.Value, 64)
 
-	if r.Setting == "eq" {
+	switch r.Setting {
+	case "eq":
 		if val != needed_val {
 			return false
 		}
-	} else if r.Setting == "gt" {
+	case "gt":
 		if val <= needed_val {
 			return false
 		}
-	} else if r.Setting == "lt" {
+	case "lt":
 		if val >= needed_val {
 			return false
 		}
