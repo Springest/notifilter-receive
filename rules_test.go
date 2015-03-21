@@ -7,8 +7,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var jt = types.JsonText(`{"active": true, "name": "Go"}`)
+
 func TestRuleKeyDoesNotMatch(t *testing.T) {
-	jt := types.JsonText(`{"active": false}`)
 	s := Stat{"Mark", jt}
 
 	r := Rule{
@@ -20,7 +21,6 @@ func TestRuleKeyDoesNotMatch(t *testing.T) {
 }
 
 func TestRuleKeyDoesMatch(t *testing.T) {
-	jt := types.JsonText(`{"active": false}`)
 	s := Stat{"Mark", jt}
 
 	r := Rule{
@@ -46,13 +46,38 @@ func TestBoolFalse(t *testing.T) {
 }
 
 func TestBoolTrue(t *testing.T) {
-	jt := types.JsonText(`{"active": true}`)
 	s := Stat{"Mark", jt}
 
 	r := Rule{
 		Key:    "active",
 		Demand: "boolean",
 		Value:  "true",
+	}
+
+	result := r.Met(&s)
+	assert.Equal(t, true, result)
+}
+
+func TestStringDoesNotMatch(t *testing.T) {
+	s := Stat{"Mark", jt}
+
+	r := Rule{
+		Key:    "name",
+		Demand: "string",
+		Value:  "NotGo",
+	}
+
+	result := r.Met(&s)
+	assert.Equal(t, false, result)
+}
+
+func TestStringDoesMatch(t *testing.T) {
+	s := Stat{"Mark", jt}
+
+	r := Rule{
+		Key:    "name",
+		Demand: "string",
+		Value:  "Go",
 	}
 
 	result := r.Met(&s)

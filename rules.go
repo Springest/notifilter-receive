@@ -31,6 +31,12 @@ func (r *Rule) Met(s *Stat) bool {
 		if val.(bool) != needed_val {
 			return false
 		}
+	} else if r.Demand == "string" {
+		val := parsed[r.Key]
+		needed_val := r.Value
+		if val.(string) != needed_val {
+			return false
+		}
 	}
 
 	return true
