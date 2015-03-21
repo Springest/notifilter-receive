@@ -7,9 +7,10 @@ import (
 )
 
 type Rule struct {
-	Key   string
-	Type  string
-	Value string
+	Key      string
+	Type     string
+	Optional string
+	Value    string
 }
 
 func (r *Rule) Met(s *Stat) bool {
@@ -31,17 +32,30 @@ func (r *Rule) Met(s *Stat) bool {
 		if val.(bool) != needed_val {
 			return false
 		}
-	} else if r.Type == "string" {
+	}
+	if r.Type == "string" {
 		val := parsed[r.Key]
 		needed_val := r.Value
 		if val.(string) != needed_val {
 			return false
 		}
-	} else if r.Type == "number" {
-		val := parsed[r.Key]
+	}
+	if r.Type == "number" {
+		val := parsed[r.Key].(float64)
 		needed_val, _ := strconv.ParseFloat(r.Value, 64)
-		if val.(float64) != needed_val {
-			return false
+
+		if r.Optional == "eq" {
+			if val != needed_val {
+				return false
+			}
+		} else if r.Optional == "gt" {
+			if val <= needed_val {
+				return false
+			}
+		} else if r.Optional == "lt" {
+			if val >= needed_val {
+				return false
+			}
 		}
 	}
 

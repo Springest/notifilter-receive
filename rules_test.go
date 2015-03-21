@@ -88,9 +88,10 @@ func TestNumberDoesNotEqual(t *testing.T) {
 	s := Stat{"Mark", jt}
 
 	r := Rule{
-		Key:   "number",
-		Type:  "number",
-		Value: "11",
+		Key:      "number",
+		Type:     "number",
+		Optional: "eq",
+		Value:    "11",
 	}
 
 	result := r.Met(&s)
@@ -101,9 +102,94 @@ func TestNumberEqual(t *testing.T) {
 	s := Stat{"Mark", jt}
 
 	r := Rule{
-		Key:   "number",
-		Type:  "number",
-		Value: "12",
+		Key:      "number",
+		Type:     "number",
+		Optional: "eq",
+		Value:    "12",
+	}
+
+	result := r.Met(&s)
+	assert.Equal(t, true, result)
+}
+
+func TestNumberNotGt(t *testing.T) {
+	s := Stat{"Mark", jt}
+
+	r := Rule{
+		Key:      "number",
+		Type:     "number",
+		Optional: "gt",
+		Value:    "13",
+	}
+
+	result := r.Met(&s)
+	assert.Equal(t, false, result)
+}
+
+func TestNumberNotGtEqual(t *testing.T) {
+	s := Stat{"Mark", jt}
+
+	r := Rule{
+		Key:      "number",
+		Type:     "number",
+		Optional: "gt",
+		Value:    "12",
+	}
+
+	result := r.Met(&s)
+	assert.Equal(t, false, result)
+}
+
+func TestNumberGt(t *testing.T) {
+	s := Stat{"Mark", jt}
+
+	r := Rule{
+		Key:      "number",
+		Type:     "number",
+		Optional: "gt",
+		Value:    "11",
+	}
+
+	result := r.Met(&s)
+	assert.Equal(t, true, result)
+}
+
+func TestNumberNotLt(t *testing.T) {
+	s := Stat{"Mark", jt}
+
+	r := Rule{
+		Key:      "number",
+		Type:     "number",
+		Optional: "lt",
+		Value:    "11",
+	}
+
+	result := r.Met(&s)
+	assert.Equal(t, false, result)
+}
+
+func TestNumberNotLtEqual(t *testing.T) {
+	s := Stat{"Mark", jt}
+
+	r := Rule{
+		Key:      "number",
+		Type:     "number",
+		Optional: "lt",
+		Value:    "12",
+	}
+
+	result := r.Met(&s)
+	assert.Equal(t, false, result)
+}
+
+func TestNumberLt(t *testing.T) {
+	s := Stat{"Mark", jt}
+
+	r := Rule{
+		Key:      "number",
+		Type:     "number",
+		Optional: "lt",
+		Value:    "13",
 	}
 
 	result := r.Met(&s)
