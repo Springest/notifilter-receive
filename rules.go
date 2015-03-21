@@ -26,11 +26,12 @@ func (r *Rule) Met(s *Stat) bool {
 		return false
 	}
 
-	if r.Type == "boolean" {
+	switch r.Type {
+	case "boolean":
 		return metBool(r, parsed)
-	} else if r.Type == "string" {
+	case "string":
 		return metString(r, parsed)
-	} else if r.Type == "number" {
+	case "number":
 		return metNumber(r, parsed)
 	}
 
