@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/jmoiron/sqlx/types"
@@ -9,30 +8,53 @@ import (
 )
 
 func TestRuleKeyDoesNotMatch(t *testing.T) {
-	jt := types.JsonText(`{"foo": 1, "bar": 2}`)
+	jt := types.JsonText(`{"active": false}`)
 	s := Stat{"Mark", jt}
 
 	r := Rule{
-		Key: "notmark",
+		Key: "notactive",
 	}
 
 	result := r.Met(&s)
-	fmt.Println(result)
 	assert.Equal(t, false, result)
 }
 
 func TestRuleKeyDoesMatch(t *testing.T) {
-	jt := types.JsonText(`{"foo": 1, "bar": 2}`)
+	jt := types.JsonText(`{"active": false}`)
 	s := Stat{"Mark", jt}
 
 	r := Rule{
-		Key: "Mark",
+		Key: "active",
 	}
 
 	result := r.Met(&s)
-	fmt.Println(result)
 	assert.Equal(t, true, result)
 }
 
-func TestBool(t *testing.T) {
+func TestBoolFalse(t *testing.T) {
+	jt := types.JsonText(`{"active": false}`)
+	s := Stat{"Mark", jt}
+
+	r := Rule{
+		Key:    "active",
+		Demand: "boolean",
+		Value:  "true",
+	}
+
+	result := r.Met(&s)
+	assert.Equal(t, false, result)
+}
+
+func TestBoolTrue(t *testing.T) {
+	jt := types.JsonText(`{"active": true}`)
+	s := Stat{"Mark", jt}
+
+	r := Rule{
+		Key:    "active",
+		Demand: "boolean",
+		Value:  "true",
+	}
+
+	result := r.Met(&s)
+	assert.Equal(t, true, result)
 }
