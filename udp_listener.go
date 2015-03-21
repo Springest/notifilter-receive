@@ -72,6 +72,8 @@ func (s *Stat) notify() {
 		log.Fatal("db.Select ", err)
 	}
 	fmt.Printf("Found %d notifiers\n", len(notifiers))
+
+Notify:
 	for i := 0; i < len(notifiers); i++ {
 		notifier := notifiers[i]
 		nt := notifier.NotificationType
@@ -81,12 +83,13 @@ func (s *Stat) notify() {
 		rules_met := true
 		for _, rule := range rules {
 			if !rule.Met(s) {
+				fmt.Printf("Rule not met -- Key: %s, Type: %s, Setting %s, Value %s\n", rule.Key, rule.Type, rule.Setting, rule.Value)
 				rules_met = false
 			}
 		}
 		if !rules_met {
-			fmt.Printf("Rules not met for notifier id: %d\n", notifier.Id)
-			return
+			fmt.Printf("Stopping notification of id: %d, rules not met\n", notifier.Id)
+			continue Notify
 		}
 
 		if nt == "email" {
