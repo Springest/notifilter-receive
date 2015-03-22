@@ -5,41 +5,61 @@
 
     <style>
       * {
-      font-size: 18px;
+        font-size: 18px;
+      }
+
+      textarea#output {
+        padding-bottom: 20px;
+        display: block;
+      }
+
+      .ruleSet {
+        padding-bottom: 20px;
       }
     </style>
   </head>
   <body>
     <form action="#" id="form">
-      <textarea rows="4" cols="50" name="output"></textarea>
+      <textarea rows="4" cols="50" id="output"></textarea>
       <br>
-      <select name="key">
-        <option value="User">User</option>
-      </select>
-      <select name="type">
-        <option value="boolean">boolean</option>
-        <option value="string">string</option>
-        <option value="number">number</option>
-      </select>
-      <select name="setting">
-        <option selected value=""></option>
-        <option value="eq">eq</option>
-        <option value="gt">gt</option>
-        <option value="lt">lt</option>
-      </select>
-      <input type="text" name="value">
-      <br><br>
+      <div id="rules">
+        <div class="ruleSet">
+          <select name="key">
+            <option value="active">active</option>
+            <option value="number">number</option>
+          </select>
+          <select name="type">
+            <option value="boolean">boolean</option>
+            <option value="string">string</option>
+            <option value="number">number</option>
+          </select>
+          <select name="setting">
+            <option selected value=""></option>
+            <option value="eq">eq</option>
+            <option value="gt">gt</option>
+            <option value="lt">lt</option>
+          </select>
+          <input type="text" name="value">
+        </div>
+      </div>
+      <input type="button" name="addRule" value="Add rule">
       <input type="submit" value="Generate">
     </form>
     <script>
-      $(document).ready(function() {
-        $("#form").on("submit", function(event) {
-          event.preventDefault();
+      function duplicateSettings() {
+        var removeRule = '<input type="button" name="removeRule" value="Remove rule">';
+        el = $(".ruleSet:first").clone();
+        el.append(removeRule);
+        el.appendTo("#rules");
+      }
 
-          var key = $("select[name=key]").val();
-          var type = $("select[name=type]").val();
-          var setting = $("select[name=setting]").val();
-          var value = $("input[name=value]").val();
+      function generateSettingsFromFields() {
+        rules = []
+        $.each($(".ruleSet"), function(index, ruleSet) {
+          var key = $(ruleSet).children("select[name=key]").val();
+          var type = $(ruleSet).children("select[name=type]").val();
+          var setting = $(ruleSet).children("select[name=setting]").val();
+          var value = $(ruleSet).children("input[name=value]").val();
 
           config = {
             "key": key,
@@ -47,10 +67,32 @@
             "setting": setting,
             "value": value,
           }
-          input = JSON.stringify(config);
+
+          rules.push(config);
+        });
+
+        return rules;
+      }
+
+      $(document).ready(function() {
+        $("#form").on("submit", function(event) {
+          event.preventDefault();
+
+          rules = generateSettingsFromFields();
+          input = JSON.stringify(rules);
 
           $("#form textarea").text(input);
         })
+
+        $("#form input[name=addRule]").on("click", function(event) {
+          event.preventDefault();
+          duplicateSettings();
+        });
+
+        $("#form").on("click",  "input[name=removeRule]", function(event) {
+          event.preventDefault();
+          $(this).parent().remove();
+        });
       });
     </script>
   </body>
