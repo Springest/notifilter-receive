@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <title>Trying out generating</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <style>
+      * {
+      font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="#" id="form">
+      <textarea rows="4" cols="50" name="output"></textarea>
+      <br>
+      <select name="key">
+        <option value="User">User</option>
+      </select>
+      <select name="type">
+        <option value="boolean">boolean</option>
+        <option value="string">string</option>
+        <option value="number">number</option>
+      </select>
+      <select name="setting">
+        <option selected value=""></option>
+        <option value="eq">eq</option>
+        <option value="gt">gt</option>
+        <option value="lt">lt</option>
+      </select>
+      <input type="text" name="value">
+      <br><br>
+      <input type="submit" value="Generate">
+    </form>
+    <script>
+      $(document).ready(function() {
+        $("#form").on("submit", function(event) {
+          event.preventDefault();
+
+          var key = $("select[name=key]").val();
+          var type = $("select[name=type]").val();
+          var setting = $("select[name=setting]").val();
+          var value = $("input[name=value]").val();
+
+          config = {
+            "key": key,
+            "type": type,
+            "setting": setting,
+            "value": value,
+          }
+          input = JSON.stringify(config);
+
+          $("#form textarea").text(input);
+        })
+      });
+    </script>
+  </body>
+</html>
