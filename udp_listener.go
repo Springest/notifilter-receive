@@ -154,8 +154,10 @@ func main() {
 	}
 
 	go listenToUDP(conn)
-	http.HandleFunc("/favicon.ico", handleFavicon)
-	http.HandleFunc("/", handleIndex)
+
+	favicon := http.HandlerFunc(handleFavicon)
+	http.Handle("/favicon.ico", requestLogger(favicon))
+	http.Handle("/", requestLogger(http.HandlerFunc(handleIndex)))
 	http.HandleFunc("/new", handleNew)
 	http.HandleFunc("/create", handleCreate)
 	http.HandleFunc("/v1/count", handleCount)
@@ -166,8 +168,8 @@ func main() {
 	}
 	defer db.Close()
 
-	rows := countRows()
-	fmt.Println("Total rows:", rows)
+	// rows := countRows()
+	// fmt.Println("Total rows:", rows)
 
 	fmt.Println("Will start listening on port 8000")
 	http.ListenAndServe(":8000", nil)
